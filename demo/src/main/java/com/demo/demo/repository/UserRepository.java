@@ -18,6 +18,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.demo.demo.exception.NotFoundException;
 import com.demo.demo.model.User;
 
 @Repository
@@ -32,11 +33,19 @@ public class UserRepository {
             """;
 
     private static final String QUERY_FIND_BY_USERNAME = """
-            SELECT id, username, created_at, updated_at FROM users WHERE username = :username"
+            SELECT id, username, created_at, updated_at FROM users WHERE username = :username
             """;
 
     private static final String QUERY_UPDATE_USER = """
             UPDATE users SET username  = :username, updated_at = :updatedAt WHERE id = :id
+            """;
+
+    private static final String QUERY_FIND_ALL = """
+            SELECT id, username, created_at, updated_at FROM users ORDER BY id
+            """;
+
+    private static final String QUERY_DELETE_USER_BY_ID = """
+            DELETE FROM users WHERE id = :id
             """;
 
     private static final RowMapper<User> USER_MAPPER = new RowMapper<User>() {
@@ -83,6 +92,9 @@ public class UserRepository {
         KeyHolder kh = new GeneratedKeyHolder();
 
         try {
+            findByUsername(user.getUsername());
+            throw new IllegalArgumentException("Usuário com username: " + user.getUsername() + " já existe");
+        } catch (NotFoundException e) {
             int rows = jdbc.sql(QUERY_INSERT_USER)
                     .param("username", user.getUsername().trim())
                     .param("createdAt", nowTs)
@@ -98,29 +110,41 @@ public class UserRepository {
             user.setId(key.longValue());
             user.setCreatedAt(now);
             user.setUpdatedAt(now);
-            return user;
 
+            return user;
         } catch (DataIntegrityViolationException ex) {
             throw new IllegalStateException("Falha ao inserir usuário", ex);
         }
     }
 
-    public Optional<User> findById(Long userId) {
-        return jdbc.sql(QUERY_FIND_BY_ID)
+    public User findById(Long userId) throws NotFoundException {
+        Optional<User> user = jdbc.sql(QUERY_FIND_BY_ID)
                 .param("id", userId)
                 .query(USER_MAPPER)
                 .optional();
+
+        if (user.isPresent()) {
+            return user.get();
+        }
+
+        throw new NotFoundException("Erro: usuário não enconrado");
     }
 
-    public Optional<User> findByUsername(String username) {
-        return jdbc.sql(QUERY_FIND_BY_USERNAME)
+    public User findByUsername(String username) throws NotFoundException {
+        Optional<User> user = jdbc.sql(QUERY_FIND_BY_USERNAME)
                 .param("username", username)
                 .query(USER_MAPPER)
                 .optional();
+
+        if (user.isPresent()) {
+            return user.get();
+        }
+
+        throw new NotFoundException("Erro: usuário não enconrado");
     }
 
     @Transactional
-    public User updateUser(User user) {
+    public User updateUser(User user) throws NotFoundException {
         if (user == null || user.getId() == null) {
             throw new IllegalArgumentException("id é obrigatório para atualização");
         }
@@ -136,24 +160,32 @@ public class UserRepository {
                 .param("id", user.getId())
                 .update();
 
-        if (rows != 1) {
-            throw new IllegalStateException("Falha ao atualizar: usuário não encontrado ou múltiplas linhas afetadas");
+        if (rows == 0) {
+            throw new NotFoundException("Erro ao atualizar: usuário não encontrado");
         }
 
-        return findById(user.getId())
-                .orElseThrow(() -> new IllegalStateException("Usuário atualizado não encontrado"));
+        user = findById(user.getId());
+        if (user == null) {
+            throw new IllegalStateException("Erro ao recuperar usuário atualizado");
+        }
+
+        return user;
     }
 
     public List<User> findAll() {
-        //TODO: implement get all users
-
-        throw new IllegalStateException("Não implementado");
+        return jdbc.sql(QUERY_FIND_ALL)
+                .query(USER_MAPPER)
+                .list();
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        // TODO: implement delete process
+    public void deleteById(Long userId) throws NotFoundException {
+        int rows = jdbc.sql(QUERY_DELETE_USER_BY_ID)
+                .param("id", userId)
+                .update();
 
-        throw new IllegalStateException("Não implementado");
+        if (rows == 0) {
+            throw new NotFoundException("Erro ao remover: usuário não encontrado");
+        }
     }
 }

@@ -1,10 +1,10 @@
 package com.demo.demo.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.demo.demo.exception.NotFoundException;
 import com.demo.demo.model.User;
 import com.demo.demo.repository.UserRepository;
 
@@ -20,19 +20,23 @@ public class UserService {
         return userRepository.insert(user);
     }
 
-    public Optional<User> getUserById(Long userId) {
+    public User getUserById(Long userId) throws NotFoundException {
         return userRepository.findById(userId);
     }
 
-    public List<User> getAllUsers() {
-        // TODO: implement get all users
-
-        throw new IllegalStateException("Não implementado");
+    public User getUserByUsername(String username) throws NotFoundException {
+        return userRepository.findByUsername(username);
     }
 
-    public void deleteUserById(Long userId) {
-        // TODO: implement delete user by id
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
-        throw new IllegalStateException("Não implementado");
+    public User updateUser(User userUpdated) {
+        return userRepository.updateUser(userUpdated);
+    }
+
+    public void deleteUserById(Long userId) throws NotFoundException {
+        userRepository.deleteById(userId);
     }
 }

@@ -60,17 +60,9 @@ public class UsersController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
-        try {
-            User user = userService.getUserByUsername(username);
-            return ResponseEntity.ok(user);
-        } catch (NotFoundException e) {
-            ErrorResponse error = new ErrorResponse(
-                    HttpStatus.NOT_FOUND,
-                    "usuário com username: " + username + " não encontrado");
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
-        }
+        //TODO: implementar
+
+        throw new IllegalStateException("não implementado");
     }
 
     @GetMapping()
@@ -97,15 +89,11 @@ public class UsersController {
     @DeleteMapping("{userId}")
     public ResponseEntity<?> removeUser(@PathVariable Long userId) {
         try {
-            userService.deleteUserById(userId);
-            return ResponseEntity.noContent().build();
+            //TODO: implementar 
+            throw new IllegalStateException("não implementado");
         } catch (NotFoundException e) {
-            ErrorResponse error = new ErrorResponse(
-                    HttpStatus.NOT_FOUND,
-                    "usuário não encontrado");
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
+            //TODO: implementar
+            throw new IllegalStateException("não implementado");
         }
     }
 }

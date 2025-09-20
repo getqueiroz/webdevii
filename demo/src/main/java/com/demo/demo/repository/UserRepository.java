@@ -32,20 +32,12 @@ public class UserRepository {
             SELECT id, username, created_at, updated_at FROM users WHERE id = :id
             """;
 
-    private static final String QUERY_FIND_BY_USERNAME = """
-            SELECT id, username, created_at, updated_at FROM users WHERE username = :username
-            """;
-
     private static final String QUERY_UPDATE_USER = """
             UPDATE users SET username  = :username, updated_at = :updatedAt WHERE id = :id
             """;
 
     private static final String QUERY_FIND_ALL = """
             SELECT id, username, created_at, updated_at FROM users ORDER BY id
-            """;
-
-    private static final String QUERY_DELETE_USER_BY_ID = """
-            DELETE FROM users WHERE id = :id
             """;
 
     private static final RowMapper<User> USER_MAPPER = new RowMapper<User>() {
@@ -127,20 +119,13 @@ public class UserRepository {
             return user.get();
         }
 
-        throw new NotFoundException("Erro: usuário não enconrado");
+        throw new NotFoundException("Erro: usuário não encontrado");
     }
 
     public User findByUsername(String username) throws NotFoundException {
-        Optional<User> user = jdbc.sql(QUERY_FIND_BY_USERNAME)
-                .param("username", username)
-                .query(USER_MAPPER)
-                .optional();
+        // TODO: implementar
 
-        if (user.isPresent()) {
-            return user.get();
-        }
-
-        throw new NotFoundException("Erro: usuário não enconrado");
+        throw new IllegalStateException("não implementado");
     }
 
     @Transactional
@@ -180,12 +165,8 @@ public class UserRepository {
 
     @Transactional
     public void deleteById(Long userId) throws NotFoundException {
-        int rows = jdbc.sql(QUERY_DELETE_USER_BY_ID)
-                .param("id", userId)
-                .update();
+        //TODO: implementar
 
-        if (rows == 0) {
-            throw new NotFoundException("Erro ao remover: usuário não encontrado");
-        }
+        throw new IllegalStateException("não implementado");
     }
 }

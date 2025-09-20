@@ -25,18 +25,24 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) throws NotFoundException {
-        return userRepository.findByUsername(username);
+        //TODO implementar
+        throw new IllegalStateException("não implementado");
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        //TODO: implementar
+        throw new IllegalStateException("não implementado");
     }
 
     public User updateUser(User userUpdated) {
-        return userRepository.updateUser(userUpdated);
+        //TODO: implementar
+        
+        throw new IllegalStateException("não implementado");
     }
 
     public void deleteUserById(Long userId) throws NotFoundException {
-        userRepository.deleteById(userId);
+        //TODO: implementar 
+        
+        throw new IllegalStateException("não implementado");
     }
 }

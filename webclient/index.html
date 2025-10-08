@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Client</title>
+    <script src="api.js"></script>
+    <script src="users.js"></script>
+</head> 
+<body>
+    <h1>Welcome to the Web Client</h1>
+    <input type="text" id="userIdToBeFetched" placeholder="Enter user id">
+    <button onclick="fetchUserById()">Fetch user</button>
+    <div id="result">
+        <p>User ID: <span id="userId"></span></p>
+        <p>Username: <span id="userName"></span></p>
+        <p>Data de criação: <span id="createdAt"></span></p>
+        <p>Data de atualização: <span id="updatedAt"></span></p>
+    </div>
+</body>
+</html>

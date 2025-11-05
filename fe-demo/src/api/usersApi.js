@@ -21,6 +21,6 @@ export const UsersApi = {
     listUsers: () => http(RESOURCE),
     getUser: (id) => http(`${RESOURCE}/${id}`),
     createUser: (userData) => http(RESOURCE, { method: "POST", body: userData }),
-    updateUser: (id, userData) => http(`${RESOURCE}/${id}`, { method: "PUT", body: userData }),
+    updateUser: (id, userData) => http(`${RESOURCE}/${id}`, { method: "PUT", body: userData }), // <=== bug aqui
     deleteUser: (id) => http(`${RESOURCE}/${id}`, { method: "DELETE" }),
 };

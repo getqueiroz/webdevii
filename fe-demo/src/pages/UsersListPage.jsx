@@ -22,7 +22,7 @@ export default function UsersListPage() {
         <ul style={{ padding: 0, listStyle: "none", marginTop: 20 }}>
             {users.map(user => (
             <li key={user.id}>
-                <UserItem user={user} reload={load} />
+                <UserItem user={user} reload={fetchUsers} />
             </li>
             ))}
         </ul>
